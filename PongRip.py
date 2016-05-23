@@ -65,9 +65,19 @@ def checkHitBall(ball, paddle1, paddle2, ballDirX):
         return 1
 
 def checkPointScored(ball, score):
-    if ball.left == LINETHICKNESS or ball.right == LINETHICKNESS:
+    if ball.left == LINETHICKNESS or ball.right == WINDOWWIDTH - LINETHICKNESS:
         score +=1
     return score
+
+def displayScore(score1, score2):
+    resultSurf1 = BASICFONT.render('%s' %(score1), True, WHITE)
+    resultSurf2 = BASICFONT.render('%s' %(score2), True, WHITE)
+    resultRect1 = resultSurf1.get_rect()
+    resultRect2 = resultSurf2.get_rect()
+    resultRect1.topleft = (WINDOWWIDTH - 250, 25)
+    resultRect2.topright = (WINDOWWIDTH - 150, 25)
+    DISPLAYSURF.blit(resultSurf1, resultRect1)
+    DISPLAYSURF.blit(resultSurf2, resultRect2)
     
         
 
@@ -75,6 +85,10 @@ def main():
     pygame.init()
     global DISPLAYSURF
 
+    global BASICFONT, BASICFONTSIZE
+    BASICFONTSIZE = 20
+    BASICFONT = pygame.font.Font('freesansbold.ttf', BASICFONTSIZE)
+    
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
 
@@ -122,13 +136,15 @@ def main():
         drawBall(ball)
         ball = moveBall(ball, ballDirX, ballDirY)
         ballDirX, ballDirY = checkEdgeCollision(ball, ballDirX, ballDirY)
-        paddle2 = AI(ball, ballDirX, paddle2)
+        #paddle2 = AI(ball, ballDirX, paddle2)
         if ballDirX == -1:
             player1score = checkPointScored(ball, player1score)
         elif ballDirX == 1:
             player2score = checkPointScored(ball, player2score)
         ballDirX = ballDirX * checkHitBall(ball, paddle1, paddle2, ballDirX)
 
+        displayScore(player1score, player2score)
+        
         pygame.display.update()
         FPSCLOCK.tick(FPS)  
 
